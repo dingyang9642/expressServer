@@ -1,5 +1,5 @@
 var ToolUtil = require('../lib/tools');     // 基本工具库对象
-
+var DB = require('./db');     // 基本工具库对象
 /**
  * 用户对象
  * @type {Object}
@@ -20,6 +20,9 @@ var User = {
      * @return      {object}   用户信息 {ret: '0', data: {}}
      */
     getUserInfoById: function(_id) {
+        DB.query('select * from tt', function() {
+            
+        });
         return {
             "name": 'dingyang',
             "age": '27'
