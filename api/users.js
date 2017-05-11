@@ -3,7 +3,9 @@ var appUsersApi = express();
 var User = require('../modules/user');
 
 appUsersApi.get('/test', function(req, res) {
-    res.json(User.getUserInfoById(2));
+	User.getUserInfoById(2, function(data) {
+        res.json(data);
+	})
 });
 
 module.exports = appUsersApi;
