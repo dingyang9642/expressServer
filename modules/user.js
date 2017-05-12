@@ -1,11 +1,37 @@
 var ToolUtil = require('../lib/tools');     // 基本工具库对象
 var LOGGER = require('./logger');
+var COMMMON = require('./common');
 var DB = require('./db');     // 基本工具库对象
 /**
  * 用户对象
  * @type {Object}
  */
 var User = {
+    /**
+     * @description 用户信息校验
+     * @dateTime    2017-05-12
+     * @param       {[type]}   userInfo [description]
+     * @return      {Boolean}           [description]
+     */
+    isLegalUserIno: function(userInfo) {
+        var formatResult = {};
+        if (userInfo.name ==='') {
+            LOGGER.error({type: 'error', msg: 'user username is empty'});
+            formatResult = COMMON.formatDBResult(MSGCODE.ADDUSER_USERNAME_EMPTY_CODE, MSGCODE.ADDUSER_USERNAME_EMPTY_MSG, {});
+            return {flag: false, result: formatResult};
+        }
+        if (userInfo.password ==='') {
+            LOGGER.error({type: 'error', msg: 'user password is empty'});
+            formatResult = COMMON.formatDBResult(MSGCODE.ADDUSER_PASSWORD_EMPTY_CODE, MSGCODE.ADDUSER_PASSWORD_EMPTY_MSG, {});
+            return {flag: false, result: formatResult};
+        }
+        if (userInfo.phone ==='') {
+            LOGGER.error({type: 'error', msg: 'user phone is empty'});
+            formatResult = COMMON.formatDBResult(MSGCODE.ADDUSER_PHONE_EMPTY_CODE, MSGCODE.ADDUSER_PHONE_EMPTY_MSG, {});
+            return {flag: false, result: formatResult};
+        }
+        return {flag: true, result: formatResult};
+    },
     /**
      * @description 用户添加操作
      * @dateTime    2017-05-11
@@ -14,18 +40,25 @@ var User = {
      */
     addUser: function(options, callback) {
         var defaultOptions = {
-            name     : 'test', // *必填，用户名 string
-            password : 'test', // *必填，密码 string
-            realname : 'test', // 选填，用户名 string
+            name     : '',     // *必填，用户名 string
+            password : '',     // *必填，密码 string
+            realname : '',     // 选填，用户名 string
             type     : 0,      // 选填，用户类型 int
-            sex      : -1,     // 选填，性别 int
-            age      : 27,     // 选填，年龄 int
-            email    : 'test', // 选填，邮箱 string
-            phone    : 'test', // 选填，手机 string
-            address  : 'test', // 选填，地址 string
+            sex      : 0,      // 选填，性别 int
+            age      : 0,      // 选填，年龄 int
+            email    : '',     // 选填，邮箱 string
+            phone    : '',     // *必填，手机 string
+            address  : '',     // 选填，地址 string
             flag     : 1       // 选填，默认1，启用状态 int
         };
         var newOptions = ToolUtil.extend(defaultOptions, options);
+        // 一、校验异常
+        var verifyResult = this.isLegalUserIno(newOptions);
+        if (!verifyResult.flag) {
+            callback && callback(verifyResult.result);
+            return;
+        }
+        // 二、异常校验通过
         var newOptionsKeysAndValues = ToolUtil.getKeysAndValues(newOptions),
             keys = newOptionsKeysAndValues.keys.join(','),
             values = ToolUtil.array2str(newOptionsKeysAndValues.values, ',', true);
