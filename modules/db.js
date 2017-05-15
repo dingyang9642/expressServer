@@ -29,19 +29,19 @@ var DB = {
         switch (err.code) {
             case 'ER_NO_SUCH_TABLE':
                 LOGGER.error({type: 'fatal', msg: 'database table not exit'});
-                formatResult = COMMON.formatDBResult(MSGCODE.DBERROR_TABLE_NOTEXIT_CODE, MSGCODE.DBERROR_TABLE_NOTEXIT_MSG, {});
+                formatResult = COMMON.formatResult(MSGCODE.DBERROR_TABLE_NOTEXIT_CODE, MSGCODE.DBERROR_TABLE_NOTEXIT_MSG, {});
             break;
             case 'ER_PARSE_ERROR':
                 LOGGER.error({type: 'fatal', msg: 'database ER_PARSE_ERROR'});
-                formatResult = COMMON.formatDBResult(MSGCODE.DBERROR_DATA_FORMAT_CODE, MSGCODE.DBERROR_DATA_FORMAT_MSG, {});
+                formatResult = COMMON.formatResult(MSGCODE.DBERROR_DATA_FORMAT_CODE, MSGCODE.DBERROR_DATA_FORMAT_MSG, {});
             break;
             case 'ER_BAD_FIELD_ERROR':
                 LOGGER.error({type: 'fatal', msg: 'database ER_BAD_FIELD_ERROR'});
-                formatResult = COMMON.formatDBResult(MSGCODE.DBERROR_DATA_FIELD_CODE, MSGCODE.DBERROR_DATA_FIELD_MSG, {});
+                formatResult = COMMON.formatResult(MSGCODE.DBERROR_DATA_FIELD_CODE, MSGCODE.DBERROR_DATA_FIELD_MSG, {});
             break;
             default:
                 LOGGER.error({type: 'fatal', msg: 'database ER_OTHER_ERROR'});
-                formatResult = COMMON.formatDBResult(MSGCODE.DBERROR_OTHER_CODE, MSGCODE.DBERROR_OTHER_MSG, {});
+                formatResult = COMMON.formatResult(MSGCODE.DBERROR_OTHER_CODE, MSGCODE.DBERROR_OTHER_MSG, {});
             break;
         }
         return formatResult;
@@ -59,7 +59,7 @@ var DB = {
         pool.getConnection(function(err, conn) {
             if(err) {
                 LOGGER.error({type: 'fatal', msg: 'database connection failed'});
-                var formatResult = COMMON.formatDBResult(MSGCODE.DBERROR_CONNECTION_CODE, MSGCODE.DBERROR_CONNECTION_MSG, {});
+                var formatResult = COMMON.formatResult(MSGCODE.DBERROR_CONNECTION_CODE, MSGCODE.DBERROR_CONNECTION_MSG, {});
                 callback(formatResult);
             } else {
                 conn.query(sql, function(err, values, fields) {
@@ -69,7 +69,7 @@ var DB = {
                         formatResult = self.getDBQueryErrorResult(err);
                     } else {
                         var resultData = values;
-                        formatResult = COMMON.formatDBResult(MSGCODE.DBERROR_SUCCESS_CODE, MSGCODE.DBERROR_SUCCESS_MSG, resultData);
+                        formatResult = COMMON.formatResult(MSGCODE.DBERROR_SUCCESS_CODE, MSGCODE.DBERROR_SUCCESS_MSG, resultData);
                     }
                     callback(formatResult);      // 事件驱动回调
                 });

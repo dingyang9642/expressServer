@@ -1,2 +1,8 @@
 [2017-05-10 15:56:08.636] [FATAL] error - connection database fail
 [2017-05-10 16:00:51.884] [FATAL] error - connection database fail
+[2017-05-15 15:37:16.636] [ERROR] error - user username is empty
+[2017-05-15 15:37:18.677] [ERROR] error - user username is empty
+[2017-05-15 15:37:19.846] [ERROR] error - user username is empty
+[2017-05-15 17:16:21.322] [FATAL] error - database ER_BAD_FIELD_ERROR
+[2017-05-15 17:16:35.262] [FATAL] error - database ER_BAD_FIELD_ERROR
+[2017-05-15 17:16:45.107] [FATAL] error - database ER_BAD_FIELD_ERROR

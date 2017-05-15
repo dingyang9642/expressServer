@@ -1,7 +1,9 @@
 var ToolUtil = require('../lib/tools');     // 基本工具库对象
 var LOGGER = require('./logger');
-var COMMMON = require('./common');
+var COMMON = require('./common');
+var MSGCODE = require('../conf/msgCode');
 var DB = require('./db');     // 基本工具库对象
+
 /**
  * 用户对象
  * @type {Object}
@@ -17,17 +19,17 @@ var User = {
         var formatResult = {};
         if (userInfo.name ==='') {
             LOGGER.error({type: 'error', msg: 'user username is empty'});
-            formatResult = COMMON.formatDBResult(MSGCODE.ADDUSER_USERNAME_EMPTY_CODE, MSGCODE.ADDUSER_USERNAME_EMPTY_MSG, {});
+            formatResult = COMMON.formatResult(MSGCODE.ADDUSER_USERNAME_EMPTY_CODE, MSGCODE.ADDUSER_USERNAME_EMPTY_MSG, {});
             return {flag: false, result: formatResult};
         }
         if (userInfo.password ==='') {
             LOGGER.error({type: 'error', msg: 'user password is empty'});
-            formatResult = COMMON.formatDBResult(MSGCODE.ADDUSER_PASSWORD_EMPTY_CODE, MSGCODE.ADDUSER_PASSWORD_EMPTY_MSG, {});
+            formatResult = COMMON.formatResult(MSGCODE.ADDUSER_PASSWORD_EMPTY_CODE, MSGCODE.ADDUSER_PASSWORD_EMPTY_MSG, {});
             return {flag: false, result: formatResult};
         }
         if (userInfo.phone ==='') {
             LOGGER.error({type: 'error', msg: 'user phone is empty'});
-            formatResult = COMMON.formatDBResult(MSGCODE.ADDUSER_PHONE_EMPTY_CODE, MSGCODE.ADDUSER_PHONE_EMPTY_MSG, {});
+            formatResult = COMMON.formatResult(MSGCODE.ADDUSER_PHONE_EMPTY_CODE, MSGCODE.ADDUSER_PHONE_EMPTY_MSG, {});
             return {flag: false, result: formatResult};
         }
         return {flag: true, result: formatResult};
@@ -99,10 +101,34 @@ var User = {
      * @return      {object}   用户信息 {ret: '0', data: {}}
      */
     getUserInfoById: function(_id, callback) {
+        var self = this;
         var sql = "select * from users where id=" + _id;
         DB.select(sql, function(data) {
-            callback && callback(data);
+            // 统一返回格式
+            var newData = self.formatUserInfoData(data);
+            callback && callback(newData);
         });
+    },
+    /**
+     * @description 与getUserInfoById函数关联，对返回数据格式进行处理
+     * @dateTime    2017-05-15
+     * @param       {object}   data getUserInfoById函数接收的查询返回数据
+     * @return      {object}        格式化后的数据
+     */
+    formatUserInfoData: function(data) {
+        var formatResult = {};
+        if (data.resultCode === '0') {
+            // 说明查询正确
+            if (data.result.length === 0) {
+                formatResult = COMMON.formatResult(MSGCODE.QUERYUSER_USER_NOT_EXIT_CODE, MSGCODE.QUERYUSER_USER_NOT_EXIT_MSG, {});
+            } else {
+                formatResult = COMMON.formatResult(data.resultCode, data.resultMsg, data.result[0]);
+            }
+        } else {
+            // 说明查询异常
+            formatResult = COMMON.formatResult(data.resultCode, data.resultMsg, {});
+        }
+        return formatResult;
     }
 };
 

@@ -11,7 +11,7 @@ var COMMON = {
      * @param       {void}   result   数据
      * @return      {object}          返回json数据
      */
-    formatDBResult: function(status, msg, result) {
+    formatResult: function(status, msg, result) {
         return {
             resultCode: status,
             resultMsg: msg,
@@ -29,7 +29,7 @@ var COMMON = {
         req.connection.remoteAddress ||
         req.socket.remoteAddress ||
         req.connection.socket.remoteAddress;
-    },
+    }
 };
 
 module.exports = COMMON;
